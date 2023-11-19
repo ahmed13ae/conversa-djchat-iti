@@ -37,10 +37,11 @@ class WebChatConsumer(JsonWebsocketConsumer):
         channel_id = self.channel_id
         sender = self.user
         message = content["message"]
+        attachment = content.get("attachment", None)
 
         conversation, created = Conversation.objects.get_or_create(channel_id=channel_id)
 
-        new_message = Message.objects.create(conversation=conversation, sender=sender, content=message)
+        new_message = Message.objects.create(conversation=conversation, sender=sender, content=message ,attachment=attachment)
 
         async_to_sync(self.channel_layer.group_send)(
             self.channel_id,
@@ -50,6 +51,7 @@ class WebChatConsumer(JsonWebsocketConsumer):
                     "id": new_message.id,
                     "sender": new_message.sender.username,
                     "content": new_message.content,
+                    "attachment": str(new_message.attachment.url) if new_message.attachment else None,
                     "timestamp": new_message.timestamp.isoformat(),
                 },
             },
