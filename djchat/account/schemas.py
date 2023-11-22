@@ -1,7 +1,7 @@
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiParameter, extend_schema
 
-from .serializers import AccountSerializer
+from .serializers import AccountSerializer, RegisterSerializer
 
 user_list_docs = extend_schema(
     responses=AccountSerializer(),
@@ -13,4 +13,9 @@ user_list_docs = extend_schema(
             description="User ID",
         ),
     ],
+)
+
+register_docs = extend_schema(
+    request=RegisterSerializer,
+    responses=AccountSerializer(),
 )
